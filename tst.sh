@@ -43,7 +43,7 @@ __tst__download_tests() {
       curl --silent "$download_url" -o "$cache_dir/$path"
     fi
   done
-
+  rm "$json_tmp"
 }
 
 
@@ -72,6 +72,7 @@ __tst__run_tests() {
       echo "SUCCEDED" >&2
     fi
   done
+  rm "$output_tmp"
 }
 
 
