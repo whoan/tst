@@ -76,6 +76,11 @@ EOF
     return 1
   fi
 
+  if ! which curl > /dev/null 2>&1; then
+    echo "You need 'curl' to run this script" >&2
+    return 1
+  fi
+
   local force=0
   if [[ $1 == '-f' || $1 == '--force' ]]; then
     force=1

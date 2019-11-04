@@ -18,7 +18,8 @@ bash
 
 ### Dependencies
 
-You need `jq` to use this script.
+- `curl` to download datasets
+- `jq` to process json responses from GitHub's API
 
 ## Usage
 
