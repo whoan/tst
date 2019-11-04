@@ -107,7 +107,7 @@ tst() {
   local found_test
   for param in "$@"; do
     if __tst__is_exe_file "$param"; then
-      found_test=$(strings "$param" | grep -Po "(?<=test:).+")
+      found_test=$(strings "$param" | grep -Po "(?<=tst:).+")
       [ "$found_test" ] && break
     fi
   done

@@ -23,7 +23,7 @@ bash
 
 ## Usage
 
-- Add `test:<dataset>` anywhere in the process to test
+- Add `tst:<dataset>` anywhere in the process to test
 - Prepend any command with `tst` (eg: `tst ./a.out`) and the dataset found (if so) will be downloaded and will be the input of the program.
 
 ### Optional Parameters
@@ -35,7 +35,7 @@ bash
 If you want to test a process compiled from c/++, you can add the following line to the source file:
 
 ```c++
-const char* unused = "test:<dataset>";  // replace <dataset> with something else. eg: min-coin-change
+const char* unused = "tst:<dataset>";  // replace <dataset> with something else. eg: min-coin-change
 ```
 
 > I will add an option to the `tst` command to allow specifying the dataset to use and avoid "touching" the source files.
@@ -44,7 +44,7 @@ const char* unused = "test:<dataset>";  // replace <dataset> with something else
 
 The script is really small so I encourage you to read it. In a nutshell, this is how it works:
 
-- The script uses [`strings`][strings] command to find the pattern **test:<dataset>** in the executable file to test
+- The script uses [`strings`][strings] command to find the pattern **tst:<dataset>** in the executable file to test
 - If a dataset is found, it uses [Github's API][gh-api] to retrieve the input/output files
 - For each input file downloaded, the provided process is executed with the input file (dataset) as its input, and the result is compared to the matching output file
 
