@@ -104,18 +104,18 @@ tst() {
     shift
   fi
 
-  local found_test
+  local found_dataset
   for param in "$@"; do
     if __tst__is_exe_file "$param"; then
-      found_test=$(strings "$param" | grep -Po "(?<=tst:).+")
-      [ "$found_test" ] && break
+      found_dataset=$(strings "$param" | grep -Po "(?<=tst:).+")
+      [ "$found_dataset" ] && break
     fi
   done
 
-  if [ "$found_test" ]; then
-    echo "Running test $found_test in executable: $*" >&2
-    __tst__download_tests "$force" "$found_test"
-    __tst__run_tests "$found_test" "$@"
+  if [ "$found_dataset" ]; then
+    echo "Running test $found_dataset in executable: $*" >&2
+    __tst__download_tests "$force" "$found_dataset"
+    __tst__run_tests "$found_dataset" "$@"
   else
     "$@"
   fi
