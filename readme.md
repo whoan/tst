@@ -16,6 +16,10 @@ curl --fail "https://raw.githubusercontent.com/whoan/tst/master/tst.sh" > tst.sh
 bash
 ```
 
+### Dependencies
+
+You need `jq` to use this script.
+
 ## Usage
 
 - Add `test:<dataset>` anywhere in the process to test

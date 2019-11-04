@@ -71,6 +71,11 @@ EOF
     return 1
   fi
 
+  if ! which jq > /dev/null 2>&1; then
+    echo "You need 'jq' to run this script" >&2
+    return 1
+  fi
+
   local force=0
   if [[ $1 == '-f' || $1 == '--force' ]]; then
     force=1
