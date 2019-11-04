@@ -34,7 +34,7 @@ You need `jq` to use this script.
 If you want to test a process compiled from c/++, you can add the following line to the source file:
 
 ```c++
-const char* unused = "test:min-coin-change";
+const char* unused = "test:<dataset>";  // replace <dataset> with something else. eg: min-coin-change
 ```
 
 > I will add an option to the `tst` command to allow specifying the dataset to use and avoid "touching" the source files.
