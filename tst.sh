@@ -21,11 +21,16 @@ __tst__download_tests() {
   # download list of tests
   local json_tmp
   json_tmp=$(command -p mktemp) || return 1
-  curl --silent "$dataset_repo/$dataset" > "$json_tmp"
+  curl --silent "$dataset_repo/$dataset" -o "$json_tmp" || return 1
 
   # download each test
   local json_length
-  json_length=$(jq 'length' < "$json_tmp")
+  json_length=$(jq 'arrays | length' < "$json_tmp")
+  if [ -z "$json_length" ]; then
+    echo "Dataset '$dataset' not found in: $dataset_repo/$dataset" >&2
+    return 1
+  fi
+
   for (( i=0; i < json_length; ++i)); do
     local path
     path=$(jq --raw-output ".[$i].path" < "$json_tmp")
@@ -46,6 +51,8 @@ __tst__run_tests() {
   local dataset
   dataset="${1:?Missing dataset name}"
   shift
+
+  echo "Running test '$found_dataset' in executable: $*" >&2
 
   local cache_dir=~/.cache/tst
   local output_tmp
@@ -112,9 +119,7 @@ tst() {
     fi
   done
 
-  if [ "$found_dataset" ]; then
-    echo "Running test $found_dataset in executable: $*" >&2
-    __tst__download_tests "$force" "$found_dataset"
+  if [ "$found_dataset" ] && __tst__download_tests "$force" "$found_dataset"; then
     __tst__run_tests "$found_dataset" "$@"
   else
     "$@"
