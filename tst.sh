@@ -6,15 +6,14 @@ __tst__is_exe_file() {
   [ -e "$filename" ]
 }
 
-__tst__download_and_run_tests() {
+
+__tst__download_tests() {
   local dataset_repo=https://api.github.com/repos/whoan/datasets/contents
 
   local force
   force="${1:?Missing force flag}"
-  shift
   local dataset
-  dataset="${1:?Missing dataset name}"
-  shift
+  dataset="${2:?Missing dataset name}"
 
   local cache_dir=~/.cache/tst
   mkdir -p "$cache_dir"/
@@ -40,21 +39,34 @@ __tst__download_and_run_tests() {
     fi
   done
 
-  # run tests
+}
+
+
+__tst__run_tests() {
+  local dataset
+  dataset="${1:?Missing dataset name}"
+  shift
+
+  local cache_dir=~/.cache/tst
   local output_tmp
   output_tmp=$(command -p mktemp) || return 1
   for input in "$cache_dir/$dataset"/input-*; do
+    echo -n "${input##*/} -> " >&2
     "$@" < "$input" > "$output_tmp"
     local expected_output_file=${input//input/output}
     if ! diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
-      echo "Test $dataset/${input##*/} failed" >&2
+      echo "FAILED" >&2
       echo "Expected output:" >&2
       cat "$expected_output_file" >&2
       echo "Current output:" >&2
       cat "$output_tmp" >&2
+      echo
+    else
+      echo "SUCCEDED" >&2
     fi
   done
 }
+
 
 __tst__can_run() {
 
@@ -82,6 +94,7 @@ EOF
   fi
 }
 
+
 tst() {
   __tst__can_run "$@" || return 1
 
@@ -101,7 +114,8 @@ tst() {
 
   if [ "$found_test" ]; then
     echo "Running test $found_test in executable: $*" >&2
-    __tst__download_and_run_tests "$force" "$found_test" "$@"
+    __tst__download_tests "$force" "$found_test"
+    __tst__run_tests "$found_test" "$@"
   else
     "$@"
   fi
