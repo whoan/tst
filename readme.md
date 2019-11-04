@@ -43,9 +43,12 @@ const char* unused = "test:<dataset>";  // replace <dataset> with something else
 
 The script is really small so you can check it, but in a nutshell, this is how it works:
 
-- The script uses `strings` command to find the pattern **test:<dataset>**
-- If a dataset is found, it uses Github's API to retrieve teh input/output files
-- For each input file downloaded, the provided process (the one to test) is executed with the input file (dataset) as its input, and the result is compared to the matching output file
+- The script uses [`strings`][strings] command to find the pattern **test:<dataset>**
+- If a dataset is found, it uses [Github's API][gh-api] to retrieve the input/output files
+- For each input file downloaded, the process to test is executed with the input file (dataset) as its input, and the result is compared to the matching output file
+
+[strings]: https://linux.die.net/man/1/strings
+[gh-api]: https://developer.github.com/v3/repos/contents/#get-contents
 
 ## License
 
