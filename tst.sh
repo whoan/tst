@@ -67,7 +67,7 @@ __tst__run_tests() {
       cat "$expected_output_file" >&2
       echo "Current output:" >&2
       cat "$output_tmp" >&2
-      echo
+      echo >&2
     else
       echo "SUCCEDED" >&2
     fi
@@ -123,6 +123,7 @@ tst() {
   if [ "$found_dataset" ] && __tst__download_tests "$force" "$found_dataset"; then
     __tst__run_tests "$found_dataset" "$@"
   else
+    echo "Running $*" >&2
     "$@"
   fi
 }
