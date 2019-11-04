@@ -56,8 +56,8 @@ __tst__download_and_run_tests() {
   done
 }
 
+__tst__can_run() {
 
-tst() {
   if (( ${#@} == 0 )) || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]; then
     cat >&2 <<EOF
 Usage: tst [options] <arguments...>
@@ -80,6 +80,10 @@ EOF
     echo "You need 'curl' to run this script" >&2
     return 1
   fi
+}
+
+tst() {
+  __tst__can_run "$@" || return 1
 
   local force=0
   if [[ $1 == '-f' || $1 == '--force' ]]; then
