@@ -1,8 +1,7 @@
 # tst
 
-Test your programs using public datasets form the web (currently, from [my repo of datasets in github][repo-datasets]) or your local filesystem.
+Test your programs using public datasets from GitHub or your local filesystem.
 
-[repo-datasets]: https://github.com/whoan/datasets
 
 ## Installation
 
@@ -23,29 +22,42 @@ bash
 
 ## Usage
 
-- Add `tst:<dataset>` anywhere in the process to test. `dataset` can be a full path to a folder in your local filesystem, or a name to look for in a specified url (see TODO).
-- Prepend any command with `tst` (eg: `tst ./a.out`) and the dataset found (if so) will be downloaded and will be the input of the program.
+- Add `tst:<dataset>` anywhere in your program. `dataset` can be a full path to a folder in your local filesystem, or a folder in a GitHub repo.
+- Prefix any command with `tst` (eg: `tst ./a.out`) and the dataset found (if so) will be the input of your program.
+
+eg: if you want to test a process compiled from c/++, you can add the following line to the source file:
+
+```c++
+const char* tst = "tst:/home/you/datasets/knapsack";
+```
 
 ### Optional Parameters
 
 - You can provide the `-f/--force` flag to force downloading the tests regardless of it being present in the cache (*~/.cache/tst*). The cache will be updated with the new content.
 
-## Example
+### Settings
 
-If you want to test a process compiled from c/++, you can add the following line to the source file:
+If you want to download datasets from GitHub, please set the `base_url` in *~/.config/tst/settings.ini*.
 
-```c++
-const char* unused = "tst:<dataset>";  // replace <dataset> with something else. eg: min-coin-change
+eg: to use the datasets in https://github.com/whoan/datasets, you have to set this `base_url`:
+
+```bash
+$ cat ~/.config/tst/settings.ini
+```
+```
+base_url=https://api.github.com/repos/whoan/datasets/contents
 ```
 
-> I will add an option to the `tst` command to allow specifying the dataset to use and avoid "touching" the source files.
+## Example
+
+See this real world example: https://github.com/whoan/challenges/blob/master/min-coin-change.cpp
 
 ## How it works?
 
 The script is really small so I encourage you to read it. In a nutshell, this is how it works:
 
 - The script uses [`strings`][strings] command to find the pattern **tst:<dataset>** in the executable file to test
-- If a dataset is found, it uses [Github's API][gh-api] to retrieve the input/output files
+- If a dataset is found, it retrieves the input/output files either from your local filesystem (if a full path is provided) or using [Github's API][gh-api]
 - For each input file downloaded, the provided process is executed with the input file (dataset) as its input, and the result is compared to the matching output file
 
 [strings]: https://linux.die.net/man/1/strings
@@ -53,7 +65,7 @@ The script is really small so I encourage you to read it. In a nutshell, this is
 
 ## TODO
 
-- Make the url to retrieve the datasets from, configurable
+- Add an option to the command to allow specifying the dataset to use, instead of "touching" the source files.
 
 ## License
 
