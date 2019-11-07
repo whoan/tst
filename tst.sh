@@ -102,16 +102,17 @@ __tst__run_tests() {
     fi
 
     local expected_output_file=${input//input/output}
-    if ! diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
-      echo "FAILED" >&2
-      echo "Expected output:" >&2
-      cat "$expected_output_file" >&2
-      echo "Current output:" >&2
-      cat "$output_tmp" >&2
-      echo >&2
-    else
+    if diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
       echo "SUCCEDED" >&2
+      continue
     fi
+
+    echo "FAILED" >&2
+    echo "Expected output:" >&2
+    cat "$expected_output_file" >&2
+    echo "Current output:" >&2
+    cat "$output_tmp" >&2
+    echo >&2
   done
   rm "$output_tmp"
 }
