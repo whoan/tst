@@ -102,7 +102,7 @@ __tst__run_tests() {
     fi
 
     local expected_output_file=${input//input/output}
-    if diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
+    if diff --brief --ignore-all-space "$output_tmp" "$expected_output_file" > /dev/null; then
       echo "SUCCEDED" >&2
       continue
     fi
