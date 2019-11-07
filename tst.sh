@@ -52,7 +52,7 @@ __tst__run_tests() {
   dataset="${1:?Missing dataset name}"
   shift
 
-  echo "Running test '$found_dataset' in executable: $*" >&2
+  echo "Running test '$dataset' in executable: $*" >&2
 
   local cache_dir=~/.cache/tst
   local output_tmp
