@@ -7,8 +7,26 @@ __tst__is_exe_file() {
 }
 
 
+__tst__get_base_url() {
+  local config_file=~/.config/tst/settings.ini
+  if [ ! -f "$config_file" ]; then
+    mkdir -p "${config_file%/*}" && touch "$config_file"
+  fi
+
+  local base_url
+  base_url=$(grep -Po "(?<=^base_url=).+" "$config_file")
+  if [ -z "$base_url" ]; then
+    echo "To download datasets from the web, you need to specify a 'base_url' in $config_file" >&2
+    return 1
+  fi
+
+  echo "$base_url"
+}
+
+
 __tst__download_tests() {
-  local dataset_repo=https://api.github.com/repos/whoan/datasets/contents
+  local base_url
+  base_url=$(__tst__get_base_url)
 
   local force
   force="${1:?Missing force flag}"
@@ -21,13 +39,13 @@ __tst__download_tests() {
   # download list of tests
   local json_tmp
   json_tmp=$(command -p mktemp) || return 1
-  curl --silent "$dataset_repo/$dataset" -o "$json_tmp" || return 1
+  curl --silent "$base_url/$dataset" -o "$json_tmp" || return 1
 
   # download each test
   local json_length
   json_length=$(jq 'arrays | length' < "$json_tmp")
   if [ -z "$json_length" ]; then
-    echo "Dataset '$dataset' not found in: $dataset_repo/$dataset" >&2
+    echo "Dataset '$dataset' not found in: $base_url/$dataset" >&2
     return 1
   fi
 
@@ -130,7 +148,9 @@ tst() {
   done
 
   if [ "$found_dataset" ]; then
-    __tst__has_full_path "$found_dataset" || __tst__download_tests "$force" "$found_dataset"
+    if ! __tst__has_full_path "$found_dataset"; then
+      __tst__download_tests "$force" "$found_dataset" || return 1
+    fi
     __tst__run_tests "$found_dataset" "$@"
   else
     echo "Running $*" >&2
