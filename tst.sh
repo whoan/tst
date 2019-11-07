@@ -58,7 +58,7 @@ __tst__run_tests() {
   local output_tmp
   output_tmp=$(command -p mktemp) || return 1
   for input in "$cache_dir/$dataset"/input-*; do
-    echo -n "${input##*/} -> " >&2
+    echo -n "${input} -> " >&2
     "$@" < "$input" > "$output_tmp"
     local expected_output_file=${input//input/output}
     if ! diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
