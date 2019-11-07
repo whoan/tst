@@ -1,6 +1,6 @@
 # tst
 
-Test your programs using public datasets form the web (currently, from [my repo of datasets in github][repo-datasets], but I will make it configurable in the future).
+Test your programs using public datasets form the web (currently, from [my repo of datasets in github][repo-datasets]) or your local filesystem.
 
 [repo-datasets]: https://github.com/whoan/datasets
 
@@ -23,7 +23,7 @@ bash
 
 ## Usage
 
-- Add `tst:<dataset>` anywhere in the process to test
+- Add `tst:<dataset>` anywhere in the process to test. `dataset` can be a full path to a folder in your local filesystem, or a name to look for in a specified url (see TODO).
 - Prepend any command with `tst` (eg: `tst ./a.out`) and the dataset found (if so) will be downloaded and will be the input of the program.
 
 ### Optional Parameters
@@ -50,6 +50,10 @@ The script is really small so I encourage you to read it. In a nutshell, this is
 
 [strings]: https://linux.die.net/man/1/strings
 [gh-api]: https://developer.github.com/v3/repos/contents/#get-contents
+
+## TODO
+
+- Make the url to retrieve the datasets from, configurable
 
 ## License
 
