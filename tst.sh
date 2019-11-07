@@ -110,6 +110,7 @@ __tst__run_tests() {
     echo "FAILED" >&2
     echo "Expected output:" >&2
     cat "$expected_output_file" >&2
+    echo >&2
     echo "Current output:" >&2
     cat "$output_tmp" >&2
     echo >&2
