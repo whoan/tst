@@ -86,22 +86,33 @@ __tst__run_tests() {
   if ! __tst__has_full_path "$dataset"; then
     dataset=~/.cache/tst/$dataset
   fi
+
+  local timeout
+  timeout=$(__tst__get_setting timeout 2> /dev/null)
+  timeout=${timeout:-5}  # sensible default
+
   local output_tmp
   output_tmp=$(command -p mktemp) || return 1
   for input in "$dataset"/input-*; do
     echo -n "${input} -> " >&2
-    "$@" < "$input" > "$output_tmp"
-    local expected_output_file=${input//input/output}
-    if ! diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
-      echo "FAILED" >&2
-      echo "Expected output:" >&2
-      cat "$expected_output_file" >&2
-      echo "Current output:" >&2
-      cat "$output_tmp" >&2
-      echo >&2
-    else
-      echo "SUCCEDED" >&2
+
+    if ! timeout $timeout "$@" < "$input" > "$output_tmp"; then
+      echo "TIMEOUT ($timeout seconds)" >&2
+      continue
     fi
+
+    local expected_output_file=${input//input/output}
+    if diff -q "$output_tmp" "$expected_output_file" > /dev/null; then
+      echo "SUCCEDED" >&2
+      continue
+    fi
+
+    echo "FAILED" >&2
+    echo "Expected output:" >&2
+    cat "$expected_output_file" >&2
+    echo "Current output:" >&2
+    cat "$output_tmp" >&2
+    echo >&2
   done
   rm "$output_tmp"
 }

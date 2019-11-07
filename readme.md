@@ -37,16 +37,18 @@ const char* tst = "tst:/home/you/datasets/knapsack";
 
 ### Settings
 
-If you want to download datasets from GitHub, please set the `base_url` in *~/.config/tst/settings.ini*.
+- If you want to download datasets from GitHub, please set the `base_url` in *~/.config/tst/settings.ini*
 
-eg: to use the datasets in https://github.com/whoan/datasets, you have to set this `base_url`:
+    eg: to use the datasets in https://github.com/whoan/datasets, you have to set this `base_url`:
 
-```bash
-$ cat ~/.config/tst/settings.ini
-```
-```
-base_url=https://api.github.com/repos/whoan/datasets/contents
-```
+    ```bash
+    $ cat ~/.config/tst/settings.ini
+    ```
+    ```
+    base_url=https://api.github.com/repos/whoan/datasets/contents
+    ```
+
+- Set `timeout` to N (integer) to override the default of 5 seconds. Notice that the timeout apply to each test (ie: the process has N seconds to complete each test)
 
 ## Example
 
