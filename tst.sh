@@ -7,26 +7,30 @@ __tst__is_exe_file() {
 }
 
 
-__tst__get_base_url() {
+__tst__get_setting() {
+  local repo=https://github.com/whoan/tst
+  local setting_key
+  setting_key=${1:?You need to specify a setting}
+
   local config_file=~/.config/tst/settings.ini
   if [ ! -f "$config_file" ]; then
     mkdir -p "${config_file%/*}" && touch "$config_file"
   fi
 
-  local base_url
-  base_url=$(grep -Po "(?<=^base_url=).+" "$config_file")
-  if [ -z "$base_url" ]; then
-    echo "To download datasets from the web, you need to specify a 'base_url' in $config_file" >&2
+  local setting_value
+  setting_value=$(grep -Po "(?<=^$setting_key=).+" "$config_file")
+  if [ -z "$setting_value" ]; then
+    echo "You need to set '$setting_key' in $config_file -> More info: $repo" >&2
     return 1
   fi
 
-  echo "$base_url"
+  echo "$setting_value"
 }
 
 
 __tst__download_tests() {
   local base_url
-  base_url=$(__tst__get_base_url)
+  base_url=$(__tst__get_setting base_url) || return 1
 
   local force
   force="${1:?Missing force flag}"
