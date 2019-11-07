@@ -47,6 +47,13 @@ __tst__download_tests() {
 }
 
 
+__tst__has_full_path() {
+  local dataset
+  dataset="${1:?Missing dataset name}"
+  [[ $dataset =~ ^/ ]]
+}
+
+
 __tst__run_tests() {
   local dataset
   dataset="${1:?Missing dataset name}"
@@ -54,10 +61,12 @@ __tst__run_tests() {
 
   echo "Running test '$dataset' in executable: $*" >&2
 
-  local cache_dir=~/.cache/tst
+  if ! __tst__has_full_path "$dataset"; then
+    dataset=~/.cache/tst/$dataset
+  fi
   local output_tmp
   output_tmp=$(command -p mktemp) || return 1
-  for input in "$cache_dir/$dataset"/input-*; do
+  for input in "$dataset"/input-*; do
     echo -n "${input} -> " >&2
     "$@" < "$input" > "$output_tmp"
     local expected_output_file=${input//input/output}
@@ -120,7 +129,8 @@ tst() {
     fi
   done
 
-  if [ "$found_dataset" ] && __tst__download_tests "$force" "$found_dataset"; then
+  if [ "$found_dataset" ]; then
+    __tst__has_full_path "$found_dataset" || __tst__download_tests "$force" "$found_dataset"
     __tst__run_tests "$found_dataset" "$@"
   else
     echo "Running $*" >&2
