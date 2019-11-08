@@ -81,7 +81,7 @@ __tst__run_tests() {
   dataset="${1:?Missing dataset name}"
   shift
 
-  echo "Running test '$dataset' in executable: $*" >&2
+  echo "Running test '$dataset'" >&2
 
   if ! __tst__has_full_path "$dataset"; then
     dataset=~/.cache/tst/$dataset
