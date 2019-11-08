@@ -96,8 +96,17 @@ __tst__run_tests() {
   for input in "$dataset"/input-*; do
     echo -n "${input} -> " >&2
 
-    if ! timeout $timeout "$@" < "$input" > "$output_tmp"; then
+    timeout $timeout "$@" < "$input" > "$output_tmp"
+    local timeout_rc=$?
+    # from man timeout: If the command times out, and --preserve-status is not set, then exit with status 124
+    if (( timeout_rc == 124 )) ; then
       echo "TIMEOUT ($timeout seconds)" >&2
+      continue
+    fi
+
+    if (( timeout_rc != 0 )) ; then
+      echo "Process could not be tested." >&2
+      echo >&2
       continue
     fi
 
