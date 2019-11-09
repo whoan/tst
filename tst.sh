@@ -7,6 +7,24 @@ __tst__is_exe_file() {
 }
 
 
+__tst__fix_directory() {
+  local param
+  param=${1:?Missing param}
+  if [[ $param =~ ^~/ ]]; then
+    echo ${param/\~/$HOME}
+  else
+    echo $param
+  fi
+}
+
+
+__tst__is_a_directory() {
+  local param
+  param=${1:?Missing param}
+  [ -d $param ]
+}
+
+
 __tst__get_setting() {
   local repo=https://github.com/whoan/tst
   local setting_key
@@ -69,21 +87,13 @@ __tst__download_tests() {
 }
 
 
-__tst__has_full_path() {
-  local dataset
-  dataset="${1:?Missing dataset name}"
-  ! [[ $dataset =~ http ]]
-}
-
-
 __tst__run_tests() {
   local dataset
   dataset="${1:?Missing dataset name}"
   shift
-
   echo "Running test '$dataset'" >&2
 
-  if ! __tst__has_full_path "$dataset"; then
+  if ! __tst__is_a_directory "$dataset"; then
     dataset=~/.cache/tst/$dataset
   fi
 
@@ -173,7 +183,8 @@ tst() {
   done
 
   if [ "$found_dataset" ]; then
-    if ! __tst__has_full_path "$found_dataset"; then
+    found_dataset=$(__tst__fix_directory "$found_dataset")
+    if ! __tst__is_a_directory "$found_dataset"; then
       __tst__download_tests "$force" "$found_dataset" || return 1
     fi
     __tst__run_tests "$found_dataset" "$@"
