@@ -72,7 +72,7 @@ __tst__download_tests() {
 __tst__has_full_path() {
   local dataset
   dataset="${1:?Missing dataset name}"
-  [[ $dataset =~ ^/ ]]
+  ! [[ $dataset =~ http ]]
 }
 
 
