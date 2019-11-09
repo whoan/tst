@@ -101,6 +101,7 @@ __tst__run_tests() {
   timeout=$(__tst__get_setting timeout 2> /dev/null)
   timeout=${timeout:-5}  # sensible default
 
+  local some_test_failed
   local output_tmp
   output_tmp=$(command -p mktemp) || return 1
   for input in "$dataset"/input-*; do
@@ -111,12 +112,14 @@ __tst__run_tests() {
     # from man timeout: If the command times out, and --preserve-status is not set, then exit with status 124
     if (( timeout_rc == 124 )) ; then
       echo "TIMEOUT ($timeout seconds)" >&2
+      some_test_failed=1
       continue
     fi
 
     if (( timeout_rc != 0 )) ; then
       echo "Process could not be tested." >&2
       echo >&2
+      some_test_failed=1
       continue
     fi
 
@@ -133,8 +136,10 @@ __tst__run_tests() {
     echo "Current output:" >&2
     cat "$output_tmp" >&2
     echo >&2
+    some_test_failed=1
   done
   rm "$output_tmp"
+  [ -z "$some_test_failed" ]
 }
 
 
@@ -187,7 +192,7 @@ tst() {
     if ! __tst__is_a_full_path_directory "$found_dataset"; then
       __tst__download_tests "$force" "$found_dataset" || return 1
     fi
-    __tst__run_tests "$found_dataset" "$@"
+    __tst__run_tests "$found_dataset" "$@" || return 1
   else
     echo "Running $*" >&2
     "$@"
