@@ -52,7 +52,7 @@ const char* tst = "tst:/home/you/datasets/knapsack";
 
 ## Example
 
-See this real world example: https://github.com/whoan/challenges/blob/master/min-coin-change.cpp
+See this real world example: https://github.com/whoan/challenges/blob/master/min-coin-change/bottom-up.cpp
 
 ## How it works?
 
