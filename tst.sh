@@ -7,7 +7,7 @@ __tst__is_exe_file() {
 }
 
 
-__tst__get_full_path_directory() {
+__tst__fix_home_directory() {
   local param
   param=${1:?Missing param}
   if [[ $param =~ ^~/ ]]; then
@@ -188,7 +188,7 @@ tst() {
   done
 
   if [ "$found_dataset" ]; then
-    found_dataset=$(__tst__get_full_path_directory "$found_dataset")
+    found_dataset=$(__tst__fix_home_directory "$found_dataset")
     if ! __tst__is_a_full_path_directory "$found_dataset"; then
       __tst__download_tests "$force" "$found_dataset" || return 1
     fi
